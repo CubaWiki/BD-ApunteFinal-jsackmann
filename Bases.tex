@@ -1,0 +1,1744 @@
+%
+%  untitled
+%
+%  Created by Julian Sackmann on 2012-07-24.
+%  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+%
+\documentclass[]{article}
+
+% Use utf-8 encoding for foreign characters
+\usepackage[utf8]{inputenx}
+
+% Setup for fullpage use
+\usepackage{fullpage}
+
+% Uncomment some of the following if you use the features
+%
+% Running Headers and footers
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+% Multipart figures
+%\usepackage{subfigure}
+
+% More symbols
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[table,xcdraw]{xcolor}
+%\usepackage{latexsym}
+
+% Surround parts of graphics with box
+\usepackage{boxedminipage}
+
+% Package for including code in the document
+\usepackage{listings}
+
+% If you want to generate a toc for each chapter (use with book)
+\usepackage[nohints]{minitoc}
+
+% This is now the recommended way for checking for PDFLaTeX:
+\usepackage{ifpdf}
+
+\usepackage{indentfirst}
+\usepackage{footnote}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{mathtools}
+\usepackage{algorithm2e}
+
+
+\ifpdf
+\usepackage[pdftex]{graphicx}
+\else
+\usepackage{graphicx}
+\fi
+\title{Apunte de Bases de Datos}
+\author{ Julián Sackmann }
+
+\date{04 de Agosto de 2014}
+
+\pagestyle{fancy}
+\thispagestyle{fancy}
+\addtolength{\headheight}{12pt}
+\addtolength{\headsep}{0.3cm}
+\lhead{Bases de Datos}
+\rhead{Julián Sackmann}
+\cfoot{P\'agina \thepage\ de \pageref{LastPage}}
+\renewcommand{\footrulewidth}{0.4pt}
+\setcounter{page}{0}
+
+
+\begin{document}
+
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg, .tif}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+%\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{4}
+
+\newcommand{\de}[2]{\item \textbf{#1}: #2}
+\newcommand{\ig}[2]{
+\begin{center}
+	\includegraphics[scale=#1]{images/#2}
+\end{center}}
+\newcommand{\subsubsubsection}[1]{\paragraph{#1}~\newline
+ \indent }
+\newcommand{\subsubsubsubsection}[1]{\subparagraph{#1}~\newline}
+\newcommand{\partir}[4]{
+\begin{minipage}[b]{#1\linewidth}\centering\begin{center}#3\end{center}\end{minipage}\begin{minipage}[b]{#2\linewidth}\centering\begin{center}#4\end{center}\end{minipage}
+}
+\newcommand{\flecha}[1]{\xrightarrow{\hspace*{0.3cm} #1 \hspace*{0.3cm}}}
+\newcommand{\Flecha}[1]{\xRightarrow{\hspace*{0.3cm} #1 \hspace*{0.3cm}}}
+\newcommand{\caja}[2]{\begin{center}
+	\fbox{
+		\parbox{#1\linewidth}{
+			#2
+		}
+	}
+\end{center}}
+\renewcommand\contentsname{Índice}
+
+
+
+
+
+\begin{titlepage}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+
+\center % Center everything on the page
+
+%----------------------------------------------------------------------------------------
+%	HEADING SECTIONS
+%----------------------------------------------------------------------------------------
+
+\textsc{\LARGE Universidad de Buenos Aires}\\[1.5cm] % Name of your university/college
+\textsc{\Large Facultad de Ciencias exactas y Naturales}\\[0.5cm] % Major heading such as course name
+\textsc{\large Licenciatura en Ciencias de la computación}\\[0.5cm] % Minor heading such as course title
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\HRule \\[0.4cm]
+{ \huge \bfseries Apunte de Bases de Datos}\\[0.4cm] % Title of your document
+\HRule \\[1.5cm]
+
+%----------------------------------------------------------------------------------------
+%	AUTHOR SECTION
+%----------------------------------------------------------------------------------------
+%
+% \begin{minipage}{0.4\textwidth}
+% \begin{flushleft} \large
+% \emph{Autor:}\\
+% Julián \textsc{Sackmann} % Your name
+% \end{flushleft}
+% \end{minipage}
+% ~
+% \begin{minipage}{0.4\textwidth}
+% \begin{flushright} \large
+% \emph{} \\
+%  \textsc{} % Supervisor's Name
+% \end{flushright}
+% \end{minipage}\\[4cm]
+
+% If you don't want a supervisor, uncomment the two lines below and remove the section above
+\Large \emph{Autor:}\\
+Julián \textsc{Sackmann}\\[2cm] % Your name
+
+%----------------------------------------------------------------------------------------
+%	DATE SECTION
+%----------------------------------------------------------------------------------------
+
+{\large 10 de Septiembre de 2012}\\[2cm] % Date, change the \today to a set date if you want to be precise
+
+%----------------------------------------------------------------------------------------
+%	LOGO SECTION
+%----------------------------------------------------------------------------------------
+
+\begin{minipage}[t]{\textwidth}
+    \begin{minipage}[t]{.55 \textwidth}
+        \includegraphics{logo_uba.jpg}
+    \end{minipage}%%
+    \begin{minipage}[b]{.45 \textwidth}
+        \textbf{\textsf{Facultad de Ciencias Exactas y Naturales}} \\
+        \textsf{Universidad de Buenos Aires} \\
+        {\scriptsize %
+        Ciudad Universitaria - (Pabell\'on I/Planta Baja) \\
+            Intendente G\"uiraldes 2160 - C1428EGA \\
+        Ciudad Aut\'onoma de Buenos Aires - Rep. Argentina \\
+            Tel/Fax: (54 11) 4576-3359 \\
+        http://exactas.uba.ar \\
+        }
+    \end{minipage}
+\end{minipage}%
+
+%\includegraphics[scale=1]{logo_uba.jpg}\\[1cm] % Include a department/university logo - this will require the graphicx package
+%\includegraphics{logo_uba.jpg}\\[1cm] % Include a department/university logo - this will require the graphicx package
+
+%----------------------------------------------------------------------------------------
+
+\vfill % Fill the rest of the page with whitespace
+
+\end{titlepage}
+
+
+
+%\maketitle
+
+\thispagestyle{fancy}
+
+\tableofcontents
+
+\newpage
+
+
+%ACID The isolation property ensures that each transaction appears to execute in isolation from other transactions, even though hundreds of transactions may be executing concurrently. The atomicity property ensures that either all the database operations in a transaction are executed or none are.
+
+
+\section{Algunas definiciones}
+\begin{itemize}
+    \de{Base de datos}{un conjunto de datos relacionados con un significado inherente (un conjunto aleatorio de datos no es considerado una base de datos). Una base de datos es diseñada y construida con un propósito específico.}
+    \de{Dato}{hecho conocido que puede ser registrado y tiene un significado implícito.}
+    \de{Minimundo}{aspecto acotado del mundo real representado por la base de datos. Sus cambios deben verse reflejados en la base.}
+    \de{\texttt{DBMS}}{database management system. Es un software de propósito general (o colección de) que permite a los usuarios crear y mantener una base de datos. EL \texttt{DBMS} no sólo contiene los datos en si mismos sino una definición completa de su estructura }
+    \de{Catálogo}{almacena información concerniente a la definición, estructura y demás metadata de la base de datos.} %MEJORAME
+    \de{Estructura de la DB}{tipos de datos, relaciones y restricciones.} %MEJORAME
+    \de{Construcción de una DB}{proeso de almacenar los datos en algún medio controlable por el DMBS.}
+    \de{Abstracción de datos}{ss la característica que permite la independencia del programa con los datos almacenados y las operaciones sobre ellos. El \texttt{DBMS} provee a los usuarios con una representación conceptual de la data abstrayendo los detalles de su almacenamiento.}
+    \de{Vista}{puede ser un subconjunto de la base de datos o puede contener datos virtuales (datos que se derivan de los datos existentes pero que no están realmente almacenados).} %MEJORAME
+    \de{Transacción}{es un programa en ejecución que incluye uno o más accesos a una base de datos. Cada transacción se supone ejecuta un acceso correcto y completo. }
+    \de{ACID}{} %MEJORAME
+    \de{DBA}{es la persona resposable de autorizar accesos a la base de datos, coordinar y monitorear su uso y adquirir software y hardware necesario. Es el último responsable de los problemas de la base de datos (sean de performance, seguridad, etc.)}
+    \de{Redundancia}{consiste en almacenar los mismo datos en múltiples lugares. En general puede ser problemático porque hay que mantener todos esos lugares actualizados y seguros, duplicando el esfuerzo (sin menciona el espacio gastado), pero a veces se hace en pos de performance.}
+    \de{Denormalización}{proceso de ubicar datos pegados para no tener que buscarlos en múltiples archivos.} %MEJORAME
+    \de{Modelo de datos}{conjunto de conceptos usados para describir estructura de una base de datos. Provee los medios necesarios para lograr la abstracción.}
+    %MODELO ENTIDAD RELACION
+    \de{Entidad}{representa un objeto o concepto del minimundo que será incluido en la base de datos.}
+    \de{Atributo}{representa una propiedad de interés que describe la entidad.}
+    \de{Relación}{representa una asociación entre las entidades.}
+
+    \de{Estado}{todos los datos de la base de datos en un momento particular. Es responsabilidad del \texttt{DBMS} asegurarse que todo estado de la base de datos sea válido (satisface la estructura y restricciones especificados en el esquema).}
+    \de{Esquemas}{\begin{enumerate}
+        \de{Interno}{describe el almacenamiento físico de la estructura de la DB.}
+        \de{Conceptual}{describe la estructura de la base de datos para un conjunto de usuarios.}
+        \de{Externo (o de vista)}{describe una parte de la base de datos que interesa a un grupo particular de usuarios. Suele haber varios externos}
+    \end{enumerate}} %MEJORAME
+    \de{Independencia \emph{lógica} de datos}{capacidad de cambiar el esquema conceptual sin tener que cambiar el externo ni los programas de aplicación.}
+    \de{Independencia \emph{física} de datos}{capacidad de cambiar el esquema interno sin tener que cambiar el conceptual.}
+    \de{DDL}{Data Definition Languje. Lenguaje usado en \texttt{DBMS}s sin clara separación entre esquemas para definir los esquemas interno y conceptual de la base de datos.} %MEJORAME
+    \de{SDL}{Storage Definition Languaje. En \texttt{DBMS}s donde existe una separación explícita entre los esquemas interno y conceptual, el SDL se utiliza para especificar el esquema interno (y el DDL queda exclusivo para el conceptual.)}
+    \de{DML}{Data Manipulation Languaje. Lenguaje usado en los \texttt{DBMS} para obtener, agregar o modificar datos.}
+
+\end{itemize}
+
+
+% stored data manager, which in turn uses basic operating system services for carrying out low-level input/output (read/write) operations between the disk and main memory.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 100 | Location 1533-1534 | Added on Friday, July 11, 2014 9:33:13 AM
+
+% runtime database processor executes (1) the privileged commands, (2) the executable query plans, and (3) the canned transactions with runtime parameters.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 122 | Location 1861-1862 | Added on Friday, July 11, 2014 11:15:43 AM
+
+% The relational model represents the database as a collection of relations. Informally, each relation resembles a table of values
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 122 | Location 1866-1867 | Added on Friday, July 11, 2014 11:16:04 AM
+
+% A row represents a fact that typically corresponds to a real-world entity or relationship.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 122 | Location 1870-1871 | Added on Friday, July 11, 2014 11:16:25 AM
+
+% In the formal relational model terminology, a row is called a tuple, a column header is called an attribute, and the table is called a relation.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 123 | Location 1871-1872 | Added on Friday, July 11, 2014 11:16:36 AM
+
+% The data type describing the types of values that can appear in each column is represented by a domain of possible values.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 123 | Location 1874-1875 | Added on Friday, July 11, 2014 11:16:56 AM
+
+% A domain D is a set of atomic values. By atomic we mean that each value in the domain is indivisible as far as the formal relational model is concerned.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 124 | Location 1897-1906 | Added on Friday, July 11, 2014 11:19:30 AM
+
+% A relation schema 2R, denoted by R (A1, A2, ..., An), is made up of a relation name R and a list of attributes, A1, A2, ..., An. Each attribute Ai is the name of a role played by some domain D in the relation schema R. D is called the domain of Ai and is denoted by dom(Ai). A relation schema is used to describe a relation; R is called the name of this relation. The degree (or arity) of a relation is the number of attributes n of its relation schema.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 125 | Location 1916-1928 | Added on Friday, July 11, 2014 11:20:38 AM
+
+% A relation (or relation state)4r of the relation schema R(A1, A2, ..., An), also denoted by r(R), is a set of n-tuples r = {t1, t2, ..., tm}. Each n-tuple t is an ordered list of n values t =<v1, v2, ..., vn>, where each value vi, 1 ≤ i ≤ n, is an element of dom (Ai) or is a special NULL value. (NULL values are discussed further below and in Section 3.1.2.) The ith value in tuple t, which corresponds to the attribute Ai, is referred to as t[Ai] or t.Ai (or t [i] if we use the positional notation). The terms relation intension for the schema R and relation extension for a relation state r(R) are also commonly used.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 127 | Location 1937-1937 | Added on Friday, July 11, 2014 4:26:50 PM
+
+% subset of the Cartesian product
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 130 | Location 1991-1992 | Added on Friday, July 11, 2014 4:29:28 PM
+
+% Each value in a tuple is an atomic value; that is, it is not divisible into components within the framework of the basic relational model.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 135 | Location 2067-2069 | Added on Friday, July 11, 2014 4:41:27 PM
+
+% states of all its relations at a particular point in time. There are generally many restrictions or constraints on the actual values in a database state. These constraints are derived from the rules in the miniworld that the database represents,
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 137 | Location 2097-2099 | Added on Saturday, July 12, 2014 12:46:47 PM
+
+% subsets of attributes of a relation schema R with the property that no two tuples in any relation state r of R should have the same combination of values for these attributes.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 138 | Location 2103-2104 | Added on Saturday, July 12, 2014 12:47:35 PM
+
+% A superkey SK specifies a uniqueness constraint that no two distinct tuples in any state r of R can have the same value for SK. Every relation has at least one default superkey—the set of all its attributes.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 138 | Location 2105-2110 | Added on Saturday, July 12, 2014 12:47:54 PM
+
+% A key K of a relation schema R is a superkey of R with the additional property that removing any attribute A from K leaves a set of attributes K′ that is not a superkey of R any more. Hence, a key satisfies two properties: 1. Two distinct tuples in any state of the relation cannot have identical values for (all) the attributes in the key. This first property also applies to a superkey. 2. It is a minimal superkey—that is, a superkey from which we cannot remove any attributes and still have the uniqueness constraint in condition 1 hold. This property is not required by a superkey.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 139 | Location 2117-2118 | Added on Saturday, July 12, 2014 12:51:39 PM
+
+% The value of a key attribute can be used to identify uniquely each tuple in the relation.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 139 | Location 2120-2121 | Added on Saturday, July 12, 2014 12:52:12 PM
+
+% the property is time-invariant: It must continue to hold when we insert new tuples in the relation.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 139 | Location 2126-2127 | Added on Saturday, July 12, 2014 12:53:04 PM
+
+% It is common to designate one of the candidate keys as the primary key of the relation. This is the candidate key whose values are used to identify tuples in the relation.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 142 | Location 2174-2174 | Added on Saturday, July 12, 2014 1:21:55 PM
+
+% The entity integrity constraint states that no primary key value can be NULL.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 143 | Location 2179-2180 | Added on Saturday, July 12, 2014 1:22:39 PM
+
+% Informally, the referential integrity constraint states that a tuple in one relation that refers to another relation must refer to an existing tuple in that relation.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 143 | Location 2184-2197 | Added on Saturday, July 12, 2014 1:25:10 PM
+
+% A set of attributes FK in relation schema R1 is a foreign key of R1 that references relation R2 if it satisfies the following rules: 1. The attributes in FK have the same domain(s) as the primary key attributes PK of R2; the attributes FK are said to reference or refer to the relation R2. 2. A value of FK in a tuple t1 of the current state r1(R1) either occurs as a value of PK for some tuple t2 in the current state r2(R2) or is NULL. In the former case, we have t1[FK] = t2[PK], and we say that the tuple t1references or refers to the tuple t2. In this definition, R1 is called the referencing relation and R2 is the referenced relation.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 153 | Location 2337-2339 | Added on Sunday, July 13, 2014 1:28:21 PM
+
+% A transaction is an executing program that includes some database operations, such as reading from the database, or applying insertions, deletions, or updates to the database. At the end of the transaction, it must leave the database in a valid or consistent state that satisfies all the constraints specified on the database schema.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 153 | Location 2341-2341 | Added on Sunday, July 13, 2014 1:28:36 PM
+
+% These retrievals and updates will together form an atomic unit of work against the database.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 239 | Location 3665-3667 | Added on Monday, July 14, 2014 12:38:38 AM
+
+% The SELECT operation is used to choose a subset of the tuples from a relation that satisfies a selection condition.3 One can consider the SELECT operation to be a filter that keeps only those tuples that satisfy a qualifying condition.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 242 | Location 3710-3711 | Added on Monday, July 14, 2014 12:39:54 AM
+
+% The degree of the relation resulting from a SELECT operation—its number of attributes—is the same as the degree of R.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 244 | Location 3729-3730 | Added on Monday, July 14, 2014 12:40:55 AM
+
+% The PROJECT operation, on the other hand, selects certain columns from the table and discards the other columns.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 244 | Location 3741-3741 | Added on Monday, July 14, 2014 12:41:33 AM
+
+% its degree is equal to the number of attributes in <attribute list>.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 244 | Location 3742-3744 | Added on Monday, July 14, 2014 12:43:19 AM
+
+% If the attribute list includes only nonkey attributes of R, duplicate tuples are likely to occur. The PROJECT operation removes any duplicate tuples, so the result of the PROJECT operation is a set of distinct tuples, and hence a valid relation. This is known as duplicate elimination.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 245 | Location 3750-3751 | Added on Monday, July 14, 2014 12:43:35 AM
+
+% The number of tuples in a relation resulting from a PROJECT operation is always less than or equal to the number of tuples in R.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 246 | Location 3762-3762 | Added on Monday, July 14, 2014 12:48:18 AM
+
+% Sequences of Operations and the RENAME Operation
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 246 | Location 3772-3773 | Added on Monday, July 14, 2014 12:48:29 AM
+
+% DEP5_EMPS ← σDno=5(EMPLOYEE) RESULT ← πFname, Lname, Salary(DEP5_EMPS)
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 249 | Location 3812-3813 | Added on Monday, July 14, 2014 12:49:26 AM
+
+% The UNION operation produces the tuples that are in either RESULT1 or RESULT2 or both (see Figure 6.3), while eliminating any duplicates.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 249 | Location 3816-3818 | Added on Monday, July 14, 2014 12:50:07 AM
+
+% When these operations are adapted to relational databases, the two relations on which any of these three operations are applied must have the same type of tuples; this condition has been called union compatibility or type compatibility.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 250 | Location 3825-3828 | Added on Monday, July 14, 2014 12:50:31 AM
+
+% UNION: The result of this operation, denoted by R S, is a relation that includes all tuples that are either in R or in S or in both R and S. Duplicate tuples are eliminated.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 250 | Location 3828-3830 | Added on Monday, July 14, 2014 12:50:39 AM
+
+% INTERSECTION: The result of this operation, denoted by R S, is a relation that includes all tuples that are in both R and S.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 250 | Location 3830-3832 | Added on Monday, July 14, 2014 12:50:46 AM
+
+% SET DIFFERENCE (or MINUS): The result of this operation, denoted by R – S, is a relation that includes all tuples that are in R but not in S.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 326 | Location 4984-4985 | Added on Monday, July 14, 2014 12:57:05 AM
+
+% A simplified diagram to illustrate the main phases of database design.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Note on page 326 | Location 4985 | Added on Monday, July 14, 2014 12:57:34 AM
+
+% Revisar del libro
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 326 | Location 4987-4988 | Added on Monday, July 14, 2014 12:58:06 AM
+
+% The conceptual schema is a concise description of the data requirements of the users and includes detailed descriptions of the entity types, relationships, and constraints;
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 326 | Location 4985-4987 | Added on Monday, July 14, 2014 12:58:14 AM
+
+% Once the requirements have been collected and analyzed, the next step is to create a conceptual schema for the database, using a high-level conceptual data model. This step is called conceptual design.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 326 | Location 4990-4991 | Added on Monday, July 14, 2014 12:58:31 AM
+
+% can also be used as a reference to ensure that all users’ data requirements are met and that the requirements do not conflict.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 326 | Location 4998-4999 | Added on Monday, July 14, 2014 12:59:35 AM
+
+% This step is called logical design or data model mapping; its result is a database schema in the implementation data model of the \texttt{DBMS}.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 326 | Location 4996-4996 | Added on Monday, July 14, 2014 12:59:42 AM
+
+% The next step in database design is the actual implementation of the database, using a commercial \texttt{DBMS}.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Note on page 328 | Location 5023 | Added on Monday, July 14, 2014 1:03:28 AM
+
+% Libro
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 328 | Location 5022-5023 | Added on Monday, July 14, 2014 1:03:28 AM
+
+% Figure 7.2 shows how the schema for this database application can be displayed by means of the graphical notation known as ER diagrams.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 328 | Location 5026-5027 | Added on Monday, July 14, 2014 1:06:12 AM
+
+% The ER model describes data as entities, relationships, and attributes.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 329 | Location 5031-5031 | Added on Monday, July 14, 2014 1:06:31 AM
+
+% entity, which is a thing in the real world with an independent existence.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 329 | Location 5033-5033 | Added on Monday, July 14, 2014 1:06:48 AM
+
+% Each entity has attributes—the particular properties that describe it.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 329 | Location 5034-5035 | Added on Monday, July 14, 2014 1:07:56 AM
+
+% A particular entity will have a value for each of its attributes. The attribute values that describe each entity become a major part of the data stored in the database.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 330 | Location 5048-5049 | Added on Monday, July 14, 2014 1:08:59 AM
+
+% Composite versus Simple (Atomic) Attributes. Composite attributes can be divided into smaller subparts, which represent more basic attributes with independent meanings.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 330 | Location 5052-5052 | Added on Monday, July 14, 2014 1:09:08 AM
+
+% Attributes that are not divisible are called simple or atomic attributes.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 330 | Location 5060-5061 | Added on Monday, July 14, 2014 1:10:02 AM
+
+% Single-Valued versus Multivalued Attributes. Most attributes have a single value for a particular entity; such attributes are called single-valued.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 331 | Location 5062-5062 | Added on Monday, July 14, 2014 1:10:29 AM
+
+% In some cases an attribute can have a set of values for the same entity—for
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 331 | Location 5065-5066 | Added on Monday, July 14, 2014 1:10:40 AM
+
+% Such attributes are called multivalued. A multivalued attribute may have lower and upper bounds to constrain the number of values allowed for each individual entity.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 331 | Location 5068-5068 | Added on Monday, July 14, 2014 1:11:08 AM
+
+% Stored versus Derived Attributes.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 332 | Location 5089-5092 | Added on Monday, July 14, 2014 1:12:17 AM
+
+% Entity Types and Entity Sets. A database usually contains groups of entities that are similar. For example, a company employing hundreds of employees may want to store similar information concerning each of the employees. These employee entities share the same attributes, but each entity has its own value(s) for each attribute. An entity type defines a collection (or set) of entities that have the same attributes.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 333 | Location 5094-5095 | Added on Monday, July 14, 2014 1:12:44 AM
+
+% The collection of all entities of a particular entity type in the database at any point in time is called an entity set;
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 333 | Location 5105-5107 | Added on Monday, July 14, 2014 8:50:58 AM
+
+% An entity type describes the schema or intension for a set of entities that share the same structure. The collection of entities of a particular entity type is grouped into an entity set, which is also called the extension of the entity type.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 334 | Location 5109-5110 | Added on Monday, July 14, 2014 8:51:28 AM
+
+% An entity type usually has one or more attributes whose values are distinct for each individual entity in the entity set. Such an attribute is called a key attribute, and its values can be used to identify each entity uniquely.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 335 | Location 5123-5124 | Added on Monday, July 14, 2014 8:52:54 AM
+
+% This key constraint (and other constraints we discuss later) is derived from the constraints of the miniworld that the database represents.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 335 | Location 5127-5127 | Added on Monday, July 14, 2014 8:53:08 AM
+
+% An entity type may also have no key, in which case it is called a weak entity type
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 341 | Location 5224-5225 | Added on Monday, July 14, 2014 7:57:15 PM
+
+% The degree of a relationship type is the number of participating entity types.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 342 | Location 5244-5245 | Added on Monday, July 14, 2014 8:03:43 PM
+
+% The role name signifies the role that a participating entity from the entity type plays in each relationship instance, and helps to explain what the relationship means.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 343 | Location 5248-5250 | Added on Monday, July 14, 2014 8:04:01 PM
+
+% in some cases the same entity type participates more than once in a relationship type in different roles. In such cases the role name becomes essential for distinguishing the meaning of the role that each participating entity plays. Such relationship types are called recursive relationships.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 344 | Location 5265-5267 | Added on Monday, July 14, 2014 8:04:58 PM
+
+% Relationship types usually have certain constraints that limit the possible combinations of entities that may participate in the corresponding relationship set. These constraints are determined from the miniworld situation that the relationships represent.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 344 | Location 5268-5269 | Added on Monday, July 14, 2014 8:05:04 PM
+
+% two main types of binary relationship constraints: cardinality ratio and participation.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 344 | Location 5270-5271 | Added on Monday, July 14, 2014 8:05:18 PM
+
+% The cardinality ratio for a binary relationship specifies the maximum number of relationship instances that an entity can participate in.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 345 | Location 5287-5289 | Added on Monday, July 14, 2014 8:07:36 PM
+
+% The participation constraint specifies whether the existence of an entity depends on its being related to another entity via the relationship type. This constraint specifies the minimum number of relationship instances that each entity can participate in, and is sometimes called the minimum cardinality constraint.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 348 | Location 5322-5324 | Added on Tuesday, July 15, 2014 1:18:21 AM
+
+% Entity types that do not have key attributes of their own are called weak entity types. In contrast, regular entity types that do have a key attribute—which include all the examples discussed so far—are called strong entity types.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 348 | Location 5328-5330 | Added on Tuesday, July 15, 2014 1:19:43 AM
+
+% A weak entity type always has a total participation constraint (existence dependency) with respect to its identifying relationship because a weak entity cannot be identified without an owner entity.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 434 | Location 6643-6644 | Added on Tuesday, July 15, 2014 9:52:45 AM
+
+% Step 1: Mapping of Regular Entity Types. For each regular (strong) entity type E in the ER schema, create a relation R that includes all the simple attributes of E.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 435 | Location 6657-6660 | Added on Tuesday, July 15, 2014 9:53:22 AM
+
+% Step 2: Mapping of Weak Entity Types. For each weak entity type W in the ER schema with owner entity type E, create a relation R and include all simple attributes (or simple components of composite attributes) of W as attributes of R. In addition, include as foreign key attributes of R, the primary key attribute(s) of the relation(s) that correspond to the owner entity type(s);
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 436 | Location 6676-6679 | Added on Tuesday, July 15, 2014 9:53:49 AM
+
+% Step 3: Mapping of Binary 1:1 Relationship Types. For each binary 1:1 relationship type R in the ER schema, identify the relations S and T that correspond to the entity types participating in R. There are three possible approaches: (1) the foreign key approach, (2) the merged relationship approach, and (3) the cross-reference or relationship relation approach. The first approach is the most useful and should be followed unless special conditions exist,
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 436 | Location 6680-6682 | Added on Tuesday, July 15, 2014 9:54:14 AM
+
+% 1. Foreign key approach: Choose one of the relations—S, say—and include as a foreign key in S the primary key of T. It is better to choose an entity type with total participation in R in the role of S. Include all the simple attributes (or simple components of composite attributes) of the 1:1 relationship type R as attributes of S.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 437 | Location 6692-6694 | Added on Tuesday, July 15, 2014 9:54:31 AM
+
+% 2. Merged relation approach: An alternative mapping of a 1:1 relationship type is to merge the two entity types and the relationship into a single relation. This is possible when both participations are total, as this would indicate that the two tables will have the exact same number of tuples at all times.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 437 | Location 6694-6697 | Added on Tuesday, July 15, 2014 9:55:04 AM
+
+% 3. Cross-reference or relationship relation approach: The third option is to set up a third relation R for the purpose of cross-referencing the primary keys of the two relations S and T representing the entity types. As we will see, this approach is required for binary M:N relationships.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 437 | Location 6697-6697 | Added on Tuesday, July 15, 2014 9:55:16 AM
+
+% lookup table),
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 437 | Location 6701-6703 | Added on Tuesday, July 15, 2014 9:55:48 AM
+
+% Step 4: Mapping of Binary 1:N Relationship Types. For each regular binary 1:N relationship type R, identify the relation S that represents the participating entity type at the N-side of the relationship type. Include as foreign key in S the primary key of the relation T that represents the other entity type participating in
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 438 | Location 6715-6717 | Added on Tuesday, July 15, 2014 9:56:16 AM
+
+% Step 5: Mapping of Binary M:N Relationship Types. For each binary M:N relationship type R, create a new relation S to represent R. Include as foreign key attributes in S the primary keys of the relations that represent the participating entity types;
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 440 | Location 6733-6737 | Added on Tuesday, July 15, 2014 9:56:37 AM
+
+% Step 6: Mapping of Multivalued Attributes. For each multivalued attribute A, create a new relation R. This relation R will include an attribute corresponding to A, plus the primary key attribute K—as a foreign key in R—of the relation that represents the entity type or relationship type that has A as a multivalued attribute. The primary key of R is the combination of A and K. If the multivalued attribute is composite, we include its simple components.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 441 | Location 6749-6754 | Added on Tuesday, July 15, 2014 9:57:37 AM
+
+% Step 7: Mapping of N-ary Relationship Types. For each n-ary relationship type R, where n > 2, create a new relation S to represent R. Include as foreign key attributes in S the primary keys of the relations that represent the participating entity types. Also include any simple attributes of the n-ary relationship type (or simple components of composite attributes) as attributes of S. The primary key of S is usually a combination of all the foreign keys that reference the relations representing the participating entity types.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 442 | Location 6772 | Added on Tuesday, July 15, 2014 4:39:14 PM
+
+
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 461 | Location 7065-7068 | Added on Tuesday, July 15, 2014 4:55:59 PM
+
+% information system (IS), which includes all resources that are involved in the collection, management, use, and dissemination of the information resources of the organization. In a computerized environment, these resources include the data itself, the \texttt{DBMS} software, the computer system hardware and storage media, the personnel who use and manage the data (DBA, end users, and so on), the application programs (software) that accesses and updates the data, and the application programmers who develop these applications.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 463 | Location 7089-7089 | Added on Tuesday, July 15, 2014 4:57:30 PM
+
+% 1. System definition. The scope of the database system, its users, and its applications are defined.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 463 | Location 7091-7091 | Added on Tuesday, July 15, 2014 4:58:58 PM
+
+% 2. Database design. A complete logical and physical design of the database system on the chosen \texttt{DBMS} is prepared.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 463 | Location 7092-7095 | Added on Tuesday, July 15, 2014 4:59:10 PM
+
+% 3. Database implementation. This comprises the process of specifying the conceptual, external, and internal database definitions, creating the (empty) database files, and implementing the software applications. 4. Loading or data conversion. The database is populated either by loading the data directly or by converting existing files into the database system format.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 463 | Location 7095-7096 | Added on Tuesday, July 15, 2014 4:59:16 PM
+
+% 5. Application conversion.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 463 | Location 7097-7097 | Added on Tuesday, July 15, 2014 4:59:27 PM
+
+% 6. Testing and validation.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 463 | Location 7099-7099 | Added on Tuesday, July 15, 2014 4:59:36 PM
+
+% 7. Operation.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 464 | Location 7101-7101 | Added on Tuesday, July 15, 2014 4:59:41 PM
+
+% 8. Monitoring and maintenance.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 466 | Location 7145-7147 | Added on Tuesday, July 15, 2014 6:55:41 PM
+
+% Conceptual database design (Phase 2). The goal of this phase is to produce a conceptual schema for the database that is independent of a specific \texttt{DBMS}. We often use a high-level data model such as the ER or EER model
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 467 | Location 7151-7153 | Added on Tuesday, July 15, 2014 6:56:10 PM
+
+% Data model mapping (Phase 4). During this phase, which is also called logical database design, we map (or transform) the conceptual schema from the high-level data model used in Phase 2 into the data model of the chosen \texttt{DBMS}.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 467 | Location 7158-7159 | Added on Tuesday, July 15, 2014 6:56:32 PM
+
+% Physical database design (Phase 5). During this phase, we design the specifications for the stored database in terms of physical file storage structures, record placement, and indexes.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez;Navathe, Shamkant)
+% - Your Highlight on page 471 | Location 7217-7218 | Added on Tuesday, July 15, 2014 7:00:05 PM
+
+% The goal of conceptual schema design is a complete understanding of the database structure, meaning (semantics), interrelationships, and constraints.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12108-12118 | Added on Thursday, July 17, 2014 1:06:28 AM
+
+% A functional dependency, denoted by X → Y, between two sets of attributes X and Y that are subsets of R specifies a constraint on the possible tuples that can form a relation state r of R. The constraint is that, for any two tuples t1 and t2 in r that have t1[X] = t2[X], they must also have t1[Y] = t2[Y]. This means that the values of the Y component of a tuple in r depend on, or are determined by, the values of the X component; alternatively, the values of the X component of a tuple uniquely (or functionally) determine the values of the Y component. We also say that there is a functional dependency from X to Y, or that Y is functionally dependent on X.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12120-12122 | Added on Thursday, July 17, 2014 1:16:47 AM
+
+% Thus, X functionally determines Y in a relation schema R if, and only if, whenever two tuples of r(R) agree on their X-value, they must necessarily agree on their Y-value.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12123-12130 | Added on Thursday, July 17, 2014 1:17:01 AM
+
+% If a constraint on R states that there cannot be more than one tuple with a given X-value in any relation instance r(R)—that is, X is a candidate key of R—this implies that X → Y for any subset of attributes Y of R (because the key constraint implies that no two tuples in any legal state r(R) will have the same value of X). If X is a candidate key of R, then X → R. If X → Y in R, this does not say whether or not Y → X in R.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12130-12131 | Added on Thursday, July 17, 2014 1:17:52 AM
+
+% A functional dependency is a property of the semantics or meaning of the attributes.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12151-12154 | Added on Thursday, July 17, 2014 1:19:00 AM
+
+% A functional dependency is a property of the relation schema R, not of a particular legal relation state r of R. Therefore, an FD cannot be inferred automatically from a given relation extension r but must be defined explicitly by someone who knows the semantics of the attributes of R.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12205-12206 | Added on Thursday, July 17, 2014 1:22:58 AM
+
+% Normalization of data can be considered a process of analyzing the given relation schemas based on their FDs and primary keys to achieve the desirable properties of (1) minimizing redundancy and (2) minimizing the insertion, deletion, and update anomalies
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12216-12224 | Added on Thursday, July 17, 2014 1:23:57 AM
+
+% Normal forms, when considered in isolation from other factors, do not guarantee a good database design. It is generally not sufficient to check separately that each relation schema in the database is, say, in BCNF or 3NF. Rather, the process of normalization through decomposition must also confirm the existence of additional properties that the relational schemas, taken together, should possess. These would include two properties: The nonadditive join or lossless join property, which guarantees that the spurious tuple generation problem discussed in Section 15.1.4 does not occur with respect to the relation schemas created after decomposition. The dependency preservation property, which ensures that each functional dependency is represented in some individual relation resulting after decomposition.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12224-12225 | Added on Thursday, July 17, 2014 1:24:04 AM
+
+% The nonadditive join property is extremely critical and must be achieved at any cost, whereas the dependency preservation property, although desirable, is sometimes sacrificed,
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12237-12238 | Added on Thursday, July 17, 2014 5:17:46 PM
+
+% Denormalization is the process of storing the join of higher normal form relations as a base relation, which is in a lower normal form.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12243-12249 | Added on Thursday, July 17, 2014 5:18:10 PM
+
+% superkey of a relation schema R = {A1, A2, ..., An} is a set of attributes S R with the property that no two tuples t1 and t2 in any legal relation state r of R will have t1[S] = t2[S]. A key K is a superkey with the additional property that removal of any attribute from K will cause K not to be a superkey any more.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12250-12250 | Added on Thursday, July 17, 2014 5:18:24 PM
+
+% a key has to be minimal;
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12255-12257 | Added on Thursday, July 17, 2014 5:18:43 PM
+
+% If a relation schema has more than one key, each is called a candidate key. One of the candidate keys is arbitrarily designated to be the primary key, and the others are called secondary keys.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12260-12262 | Added on Thursday, July 17, 2014 5:18:57 PM
+
+% An attribute of relation schema R is called a prime attribute of R if it is a member of some candidate key of R. An attribute is called nonprime if it is not a prime attribute—that is, if it is not a member of any candidate key.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12269-12270 | Added on Thursday, July 17, 2014 5:50:46 PM
+
+% First normal form (1NF)
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12271-12276 | Added on Thursday, July 17, 2014 5:51:05 PM
+
+% states that the domain of an attribute must include only atomic (simple, indivisible) values and that the value of any attribute in a tuple must be a single value from the domain of that attribute. Hence, 1NF disallows having a set of values, a tuple of values, or a combination of both as an attribute value for a single tuple. In other words, 1NF disallows relations within relations or relations as attribute values within tuples. The only attribute values permitted by 1NF are single atomic (or indivisible) values.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12339-12341 | Added on Thursday, July 17, 2014 5:56:46 PM
+
+% (2NF) is based on the concept of full functional dependency. A functional dependency X → Y is a full functional dependency if removal of any attribute A from X means that the dependency does not hold any more;
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12342-12344 | Added on Thursday, July 17, 2014 5:56:56 PM
+
+% attribute A ε X, (X – {A}) does not functionally determine Y. A functional dependency X → Y is a partial dependency if some attribute A ε X can be removed from X and the dependency still holds;
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12348-12349 | Added on Thursday, July 17, 2014 5:57:14 PM
+
+% A relation schema R is in 2NF if every nonprime attribute A in R is fully functionally dependent on the primary key of R.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12360-12365 | Added on Thursday, July 17, 2014 8:04:40 PM
+
+% Third normal form (3NF) is based on the concept of transitive dependency. A functional dependency X → Y in a relation schema R is a transitive dependency if there exists a set of attributes Z in R that is neither a candidate key nor a subset of any key of R,10 and both X → Z and Z → Y hold.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12371-12372 | Added on Thursday, July 17, 2014 9:19:53 PM
+
+% a relation schema R is in 3NF if it satisfies 2NF and no nonprime attribute of R is transitively dependent on the primary key.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12378-12380 | Added on Thursday, July 17, 2014 9:23:30 PM
+
+% Intuitively, we can see that any functional dependency in which the left-hand side is part (a proper subset) of the primary key, or any functional dependency in which the left-hand side is a nonkey attribute, is a problematic FD. 2NF and 3NF normalization remove these problem FDs by decomposing the original relation into new relations.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12386-12387 | Added on Thursday, July 17, 2014 9:24:45 PM
+
+% In general, we want to design our relation schemas so that they have neither partial nor transitive dependencies because these types of dependencies cause the update anomalies
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12392-12393 | Added on Thursday, July 17, 2014 9:25:23 PM
+
+% an attribute that is part of any candidate key will be considered as prime.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12398-12401 | Added on Thursday, July 17, 2014 9:25:37 PM
+
+% Definition. A relation schema R is in second normal form (2NF) if every non-prime attribute A in R is not partially dependent on any key of R.11
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12423-12426 | Added on Friday, July 18, 2014 1:37:58 AM
+
+% A relation schema R is in third normal form (3NF) if, whenever a nontrivial functional dependency X → A holds in R, either (a) X is a superkey of R, or (b) A is a prime attribute of R.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12447-12451 | Added on Friday, July 18, 2014 9:08:25 AM
+
+% A relation schema R is in 3NF if every nonprime attribute of R meets both of the following conditions: It is fully functionally dependent on every key of R. It is nontransitively dependent on every key of R.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12454-12455 | Added on Friday, July 18, 2014 9:12:11 AM
+
+% every relation in BCNF is also in 3NF; however, a relation in 3NF is not necessarily in BCNF.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12465-12466 | Added on Friday, July 18, 2014 9:22:31 AM
+
+% A relation schema R is in BCNF if whenever a nontrivial functional dependency X → A holds in R, then X is a superkey of R.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12475-12477 | Added on Friday, July 18, 2014 9:34:24 AM
+
+% In practice, most relation schemas that are in 3NF are also in BCNF. Only if X → A holds in a relation schema R with X not being a superkey and A being a prime attribute will R be in 3NF but not in BCNF.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12902-12904 | Added on Friday, July 18, 2014 4:08:49 PM
+
+% Formally, the set of all dependencies that include F as well as all dependencies that can be inferred from F is called the closure of F; it is denoted by F+.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12912-12916 | Added on Friday, July 18, 2014 4:12:28 PM
+
+% An FD X → Y is inferred from a set of dependencies F specified on R if X → Y holds in every legal relation state r of R; that is, whenever r satisfies all the dependencies in F, X → Y also holds in r. The closure F+ of F is the set of all functional dependencies that can be inferred from F.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12918-12919 | Added on Friday, July 18, 2014 4:12:36 PM
+
+% We use the notation F|=X → Y to denote that the functional dependency X → Y is inferred from the set of functional dependencies F.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12923-12935 | Added on Friday, July 18, 2014 4:13:12 PM
+
+% The following six rules IR1 through IR6 are well-known inference rules for functional dependencies: IR1 (reflexive rule)1: If X ⊇ Y, then X → Y. IR2 (augmentation rule)2: {X → Y} |=XZ → YZ. IR3 (transitive rule): {X → Y, Y → Z} |=X → Z. IR4 (decomposition, or projective, rule): {X → YZ} |=X → Y. IR5 (union, or additive, rule): {X → Y, X → Z} |=X → YZ. IR6 (pseudotransitive rule): {X → Y, WY → Z} |=W X → Z.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 12938-12939 | Added on Friday, July 18, 2014 4:14:52 PM
+
+% a functional dependency X → Y is trivial if X ⊇ Y;
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 13049-13052 | Added on Friday, July 18, 2014 4:20:41 PM
+
+% A set of functional dependencies F is said to cover another set of functional dependencies E if every FD in E is also in F+; that is, if every dependency in E can be inferred from F; alternatively, we can say that E is covered by F.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 13053-13057 | Added on Friday, July 18, 2014 4:20:49 PM
+
+% Two sets of functional dependencies E and F are equivalent if E+ = F+. Therefore, equivalence means that every FD in E can be inferred from F, and every FD in F can be inferred from E; that is, E is equivalent to F if both the conditions—E covers F and F covers E—hold.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 13057-13062 | Added on Friday, July 18, 2014 4:21:38 PM
+
+% We can determine whether F covers E by calculating X+with respect to F for each FD X → Y in E, and then checking whether this X+ includes the attributes in Y. If this is the case for every FD in E, then F covers E. We determine whether E and F are equivalent by checking that E covers F and F covers E.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 13067-13070 | Added on Friday, July 18, 2014 4:22:13 PM
+
+% Informally, a minimal cover of a set of functional dependencies E is a set of functional dependencies F that satisfies the property that every dependency in E is in the closure F+ of F. In addition, this property is lost if any dependency from the set F is removed
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 13071-13078 | Added on Friday, July 18, 2014 4:22:45 PM
+
+% we can formally define a set of functional dependencies F to be minimal if it satisfies the following conditions: 1. Every dependency in F has a single attribute for its right-hand side. 2. We cannot replace any dependency X → A in F with a dependency Y → A, where Y is a proper subset of X, and still have a set of dependencies that is equivalent to F. 3. We cannot remove any dependency from F and still have a set of dependencies that is equivalent to F.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 13093-13093 | Added on Friday, July 18, 2014 4:39:39 PM
+
+
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 13084-13085 | Added on Friday, July 18, 2014 4:40:53 PM
+
+% A minimal cover of a set of functional dependencies E is a minimal set of dependencies (in the standard canonical form and without redundancy) that is equivalent to E.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 13152-13153 | Added on Friday, July 18, 2014 5:39:29 PM
+
+% any relation schema with only two attributes is automatically in BCNF.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 13172-13185 | Added on Saturday, July 19, 2014 10:58:18 AM
+
+% Given a set of dependencies F on R, the projection of F on Ri, denoted by πRi(F) where Ri is a subset of R, is the set of dependencies X → Y in F+ such that the attributes in X ∪ Y are all contained in Ri. Hence, the projection of F on each relation schema Ri in the decomposition D is the set of functional dependencies in F+, the closure of F, such that all their left- and right-hand-side attributes are in Ri. We say that a decomposition D = {R1, R2, ..., Rm} of R is dependency-preserving with respect to F if the union of the projections of F on each Ri in D is equivalent to F; that is, ((πR1(F)) ∪ ... ∪ (πRm(F)))+ = F+.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 13194-13196 | Added on Saturday, July 19, 2014 10:59:06 AM
+
+% It is always possible to find a dependency-preserving decomposition D with respect to F such that each relation Ri in D is in 3NF.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 13202-13203 | Added on Saturday, July 19, 2014 5:26:23 PM
+
+% the nonadditive join property, which ensures that no spurious tuples are generated when a NATURAL JOIN operation is applied to the relations resulting from the decomposition.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 13208-13214 | Added on Saturday, July 19, 2014 5:28:58 PM
+
+% Formally, a decomposition D = {R1, R2, ..., Rm} of R has the lossless (nonadditive) join property with respect to the set of dependencies F on R if, for every relation state r of R that satisfies F, the following holds, where * is the NATURAL JOIN of all the relations in D: *(πR1(r), ...,πRm(r)) = r.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 13205-13206 | Added on Saturday, July 19, 2014 5:29:47 PM
+
+% Because this is a property of a decomposition of relation schemas, the condition of no spurious tuples should hold on every legal relation state—that
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 13234-13255 | Added on Saturday, July 19, 2014 7:15:26 PM
+
+% Create an initial matrix S with one row i for each relation Ri in D, and one column j for each attribute Aj in R. 2. Set S(i, j):= bij for all matrix entries. (* each bij is a distinct symbol associated with indices (i, j) *). 3. For each row i representing relation schema Ri {for each column j representing attribute Aj {if (relation Ri includes attribute Aj) then set S(i, j):= aj;};}; (* each aj is a distinct symbol associated with index (j ) *). 4. Repeat the following loop until a complete loop execution results in no changes to S {for each functional dependency X → Y in F {for all rows in S that have the same symbols in the columns corresponding to attributes in X {make the symbols in each column that correspond to an attribute in Y be the same in all these rows as follows: If any of the rows has an a symbol for the column, set the other rows to that same a symbol in the column. If no a symbol exists for the attribute in any of the rows, choose one of the b symbols that appears in one of the rows for the attribute and set the other rows to that same b symbol in the column ;};};}; 5. If a row is made up entirely of a symbols, then the decomposition has the nonadditive join property; otherwise, it does not.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 13291-13299 | Added on Saturday, July 19, 2014 7:21:25 PM
+
+% A decomposition D = {R1, R2} of R has the lossless (nonadditive) join property with respect to a set of functional dependencies F on R if and only if either The FD ((R1 ∩ R2) → (R1 − R2)) is in F+, or The FD ((R1 ∩ R2) → (R2 − R1)) is in F+
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 13984-13987 | Added on Saturday, July 19, 2014 8:13:53 PM
+
+% A heap file (or unordered file) places the records on disk in no particular order by appending new records at the end of the file, whereas a sorted file (or sequential file) keeps the records ordered by the value of a particular field (called the sort key). A hashed file uses a hash function applied to a particular field (called the hash key) to determine a record’s placement on disk.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 14317-14321 | Added on Saturday, July 19, 2014 8:37:04 PM
+
+% Files of Unordered Records (Heap Files) In this simplest and most basic type of organization, records are placed in the file in the order in which they are inserted, so new records are inserted at the end of the file. Such an organization is called a heap or pile file.6
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 14323-14324 | Added on Saturday, July 19, 2014 8:37:25 PM
+
+% Inserting a new record is very efficient.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 14325-14326 | Added on Sunday, July 20, 2014 8:46:46 PM
+
+% However, searching for a record using any search condition involves a linear search through the file block by block—an expensive procedure.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 14329-14331 | Added on Sunday, July 20, 2014 8:47:30 PM
+
+% To delete a record, a program must first find its block, copy the block into a buffer, delete the record from the buffer, and finally rewrite the block back to the disk. This leaves unused space in the disk block. Deleting a large number of records in this way results in wasted storage space.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 14334-14335 | Added on Sunday, July 20, 2014 8:47:39 PM
+
+% Both of these deletion techniques require periodic reorganization of the file to reclaim the unused space of deleted records.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 14351-14353 | Added on Sunday, July 20, 2014 8:49:08 PM
+
+% We can physically order the records of a file on disk based on the values of one of their fields—called the ordering field. This leads to an ordered or sequential file.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 14340-14340 | Added on Sunday, July 20, 2014 8:49:58 PM
+
+% To read all records in order of the values of some field, we create a sorted copy of the file. Sorting is an expensive operation
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 14357-14362 | Added on Sunday, July 20, 2014 8:50:16 PM
+
+% Ordered records have some advantages over unordered files. First, reading the records in order of the ordering key values becomes extremely efficient because no sorting is required. Second, finding the next record from the current one in order of the ordering key usually requires no additional block accesses because the next record is in the same block as the current one (unless the current record is the last one in the block). Third, using a search condition based on the value of an ordering key field results in faster access when the binary search technique is used, which constitutes an improvement over linear searches, although it is not often used for disk files. Ordered files are blocked and stored on contiguous cylinders to minimize the seek time.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 14377-14379 | Added on Sunday, July 20, 2014 9:18:40 PM
+
+% Ordering does not provide any advantages for random or ordered access of the records based on values of the other nonordering fields of the file. In these cases, we do a linear search for random access.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 14379-14380 | Added on Sunday, July 20, 2014 9:18:46 PM
+
+% To access the records in order based on a nonordering field, it is necessary to create another sorted copy—in a different order—of the file.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 14380-14381 | Added on Sunday, July 20, 2014 9:18:56 PM
+
+% Inserting and deleting records are expensive operations for an ordered file because the records must remain physically ordered.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 14407-14407 | Added on Sunday, July 20, 2014 9:23:13 PM
+
+
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 14409-14412 | Added on Sunday, July 20, 2014 9:25:29 PM
+
+% hashing, which provides very fast access to records under certain search conditions. This organization is usually called a hash file.8 The search condition must be an equality condition on a single field, called the hash field.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 15017-15021 | Added on Monday, July 21, 2014 7:22:25 PM
+
+% indexes, which are used to speed up the retrieval of records in response to certain search conditions. The index structures are additional files on disk that provide secondary access paths, which provide alternative ways to access the records without affecting the physical placement of records in the primary data file on disk. They enable efficient access to records based on the indexing fields that are used to construct the index.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 15062-15064 | Added on Monday, July 21, 2014 8:18:15 PM
+
+% A primary index is an ordered file whose records are of fixed length with two fields, and it acts like an access structure to efficiently search for and access the data records in a data file.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 15065-15067 | Added on Monday, July 21, 2014 8:18:40 PM
+
+% There is one index entry (or index record) in the index file for each block in the data file. Each index entry has the value of the primary key field for the first record in a block and a pointer to that block as its two field values.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 15076-15077 | Added on Monday, July 21, 2014 8:33:46 PM
+
+% The total number of entries in the index is the same as the number of disk blocks in the ordered data file.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 15080-15082 | Added on Monday, July 21, 2014 8:34:09 PM
+
+% A dense index has an index entry for every search key value (and hence every record) in the data file. A sparse (or nondense) index, on the other hand, has index entries for only some of the search values. A sparse index has fewer entries than the number of records in the file.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 15089-15091 | Added on Monday, July 21, 2014 8:36:30 PM
+
+% if the primary index file contains only bi blocks, then to locate a record with a search key value requires a binary search of that index and access to the block containing that record: a total of log2bi + 1 accesses.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 15129-15130 | Added on Monday, July 21, 2014 8:57:54 PM
+
+% If file records are physically ordered on a nonkey field—which does not have a distinct value for each record—that field is called the clustering field and the data file is called a clustered file.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 15134-15136 | Added on Monday, July 21, 2014 8:59:54 PM
+
+% There is one entry in the clustering index for each distinct value of the clustering field, and it contains the value and a pointer to the first block in the data file that has a record with that value for its clustering field.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 15137-15138 | Added on Monday, July 21, 2014 9:01:55 PM
+
+% insertion and deletion still cause problems because the data records are physically ordered. To alleviate the problem of insertion, it is common to reserve a whole block
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 15138-15139 | Added on Monday, July 21, 2014 9:02:05 PM
+
+% for each value of the clustering field;
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 15140-15141 | Added on Monday, July 21, 2014 9:03:52 PM
+
+% clustering index is another example of a nondense index because it has an entry for every distinct value of the indexing field,
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 15154-15155 | Added on Tuesday, July 22, 2014 1:18:53 AM
+
+% Many secondary indexes (and hence, indexing fields) can be created for the same file—each represents an additional means of accessing that file based on some specific field.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 15156-15157 | Added on Tuesday, July 22, 2014 1:23:02 AM
+
+% we consider a secondary index access structure on a key (unique) field that has a distinct value for every record.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 15158-15160 | Added on Tuesday, July 22, 2014 1:23:15 AM
+
+% there is one index entry for each record in the data file, which contains the value of the field for the record and a pointer either to the block in which the record is stored or to the record itself. Hence, such an index is dense.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 15196-15198 | Added on Tuesday, July 22, 2014 1:28:43 AM
+
+% We can also create a secondary index on a nonkey, nonordering field of a file. In this case, numerous records in the data file can have the same value for the indexing field.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 15206-15210 | Added on Tuesday, July 22, 2014 1:29:53 AM
+
+% keep the index entries themselves at a fixed length and have a single entry for each index field value, but to create an extra level of indirection to handle the multiple pointers. In this nondense scheme, the pointer P(i) in index entry <K(i), P(i)> points to a disk block, which contains a set of record pointers; each record pointer in that disk block points to one of the data file records with value K(i) for the indexing field.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 15216-15216 | Added on Tuesday, July 22, 2014 8:19:59 AM
+
+
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 15242-15243 | Added on Tuesday, July 22, 2014 8:29:12 AM
+
+% Searching a multilevel index requires approximately (logfobi) block accesses, which is a substantially smaller number than for a binary search if the fan-out is larger than 2.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 15263-15267 | Added on Tuesday, July 22, 2014 4:19:04 PM
+
+% Hence, a multilevel index with r1 first-level entries will have approximately t levels, where t = (logfo(r1)). When searching the index, a single disk block is retrieved at each level. Hence, t disk blocks are accessed for an index search, where t is the number of index levels.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 15378-15379 | Added on Tuesday, July 22, 2014 5:07:15 PM
+
+% The B-tree has additional constraints that ensure that the tree is always balanced and that the space wasted by deletion, if any, never becomes excessive.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 15657-15660 | Added on Tuesday, July 22, 2014 6:43:32 PM
+
+% The index entries are of the type <K, Pr> or <K, P>, where Pr is a pointer to the record containing the key, or P is a pointer to the block containing the record for that key. The index file with these index entries can be organized as a dynamically expandable hash file, using one of the techniques described in Section 17.8.3;
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 16182-16183 | Added on Tuesday, July 22, 2014 7:04:44 PM
+
+% estimates of selectivities are often kept in the \texttt{DBMS} catalog and are used by the optimizer.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 16219-16222 | Added on Tuesday, July 22, 2014 7:09:32 PM
+
+% Nested-loop join (or nested-block join). This is the default (brute force) algorithm, as it does not require any special access paths on either file in the join. For each record t in R (outer loop), retrieve every record s from S (inner loop) and test whether the two records satisfy the join condition t[A] = s[B].
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 16224-16228 | Added on Tuesday, July 22, 2014 7:09:52 PM
+
+% Single-loop join (using an access structure to retrieve the matching records). If an index (or hash key) exists for one of the two join attributes—say, attribute B of file S—retrieve each record t in R (loop over file R), and then use the access structure (such as an index or a hash key) to retrieve directly all matching records s from S that satisfy s[B] = t[A].
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 16229-16232 | Added on Tuesday, July 22, 2014 7:11:59 PM
+
+% J3—Sort-merge join. If the records of R and S are physically sorted (ordered) by value of the join attributes A and B, respectively, we can implement the join in the most efficient way possible. Both files are scanned concurrently in order of the join attributes, matching the records that have the same values for A and B.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 16274-16275 | Added on Tuesday, July 22, 2014 7:15:46 PM
+
+% In the nested-loop join, it makes a difference which file is chosen for the outer loop and which for the inner loop.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 16292-16293 | Added on Wednesday, July 23, 2014 12:38:09 AM
+
+% it is advantageous to use the file with fewer blocks as the outer-loop file in the nested-loop join.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 16317-16318 | Added on Wednesday, July 23, 2014 12:40:16 AM
+
+% The sort-merge join J3 is quite efficient if both files are already sorted by their join attribute. Only a single pass is made through each file. Hence, the number of blocks accessed is equal to the sum of the numbers of blocks in both files.
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 16321-16326 | Added on Wednesday, July 23, 2014 12:40:41 AM
+
+% If we roughly estimate the cost of sorting an external file by (b log2b) block accesses, and if both files need to be sorted, the total cost of a sort-merge join can be estimated by (bE + bD + bE log2bE + bD log2bD)).12
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Note on Location 16331 | Added on Wednesday, July 23, 2014 12:41:53 AM
+
+% Esto entra?
+% ==========
+% Fundamentals of Database Systems (Elmasri, Ramez)
+% - Your Highlight on Location 16330-16331 | Added on Wednesday, July 23, 2014 12:41:53 AM
+
+% partition-hash join and a variation called hybrid hash-join algorithm, which has been shown to be quite efficient.
+% ==========
+
+
+\section{Claves}
+\subsection{Superclave}
+Una \textbf{superclave} de un esquema $R = {A_1, A_2, ..., A_n}$ es un conjunto de atributos $S\subseteq R$ tal no pueden existir dos tuplas $t_1$ y $t_2$ en $R$ tales que $t_1[S] = t_2[S]$.
+
+Una \textbf{clave} es una superclave minimal. Si un esquema tiene más de una clave, a cada una se la llama \textbf{clave candidata} y se selecciona una de ellas para ser la clave \textbf{primaria}.
+
+Se dice que un atributo $X \in R$ es \textbf{primo} si es parte de alguna clave candidata.
+
+\section{Dependencias Funcionales}
+Una dependencia funcional (notada como $X \rightarrow Y$) entre dos conjuntos de atributos $X$ e $Y$ subconjuntos de un esquema $R$ especifica una restricción \emph{semántica} al conjunto de tuplas que pueden formar un estado $r$ de $R$. La restricción es que para todo par de tuplas $t_1$ y $t_2$ en $R$ tal que $t_1[X] = t_2[X]$ necesariamente debe valer que $t_1[Y] = t_2[Y]$. Informalmente, si dos tuplas tienen el mismo valor de $X$, necesariamente deben tener el mismo valor en $Y$.
+
+Observaciones:
+\begin{itemize}
+    \item Si $X$ es superclave de $R$, entonces $X\rightarrow Y$ es cierto para todo $Y$.
+    \item Una dependencia funcional es una propiedad \textbf{semántica}, del significado de los atributos. \textbf{No es posible determinar una dependencia funcional de una instancia de un esquema}.
+\end{itemize}
+
+\subsection{Dependencias funcionales completas}
+Una dependencia funcional $X\rightarrow Y$ se dice \textbf{completa} si al sacar cualquier atributo de $X$ la dependencia se rompe. Formalmente, $X\rightarrow Y$ es completa sii $(X\\\{A\} \rightarrow Y$ es falso para todo $A$.
+
+Una dependencia funcional es \textbf{parcial} si no es completa.
+
+\subsection{Dependencias funcionales triviales}
+Una dependencia funcional $X\rightarrow Y$ en $R$ es trivial si $Y\subseteq X$.
+
+\subsection{Dependencias funcionales transitivas}
+Una dependencia funcional $X\rightarrow Y$ en $R$ es \textbf{transitiva} si existe un conjunto de atributos $Z\subseteq R$ tal que:
+\begin{itemize}
+     \item No es subconjunto de ninguna clave.
+     \item $X\rightarrow Z$.
+     \item $Z\rightarrow Y$.
+ \end{itemize}
+
+\subsection{Clausura de dependencias funcionales}
+$F$ se infiere $X\rightarrow Y$ si y sólo si $Y \subseteq X^+$.
+
+\subsection{Cubrimiento minimal}
+Un \textbf{cubrimiento minimal} $F'$ de un conjunto de dependencias funcionales $F$ es un conjunto de dependencias funcionales que cumple:
+\begin{itemize}
+    \item $F'^+ = F^+$
+    \item El lado derecho de todas las dependencias en $F'$ tiene un solo atributo.
+    \item No hay atributos redundantes en el lado izquierdo.
+    \item No hay dependencias funcionales redundantes.
+\end{itemize}
+
+Siempre hay un cubrimiento minimal. Se usa en el algoritmo de descomposición
+
+\section{Formas Normales}
+\subsection{Buen diseño}
+Por si solas, las formas normales no garantizan un buen diseño de bases de datos. No es suficiente decir que un esquema en tercer forma normal para concluir que es un buen esquema. Para eso, el proceso de normalización debe garantizar la existencia de dos propiedades:
+\begin{itemize}
+    \item \textbf{Lossless join}: garantiza que no se generen tuplas espurias a la hora de realizar un \emph{natural join}.
+    \item \textbf{Conservación de dependencias funcionales}: garantiza que cada dependencia funcional quede representada en una sola tabla.
+\end{itemize}
+
+La propiedad de \emph{lossless join} se considera extremadamente crítica y debe ser lograda siempre. Sin embargo, a veces se sacrifica la propiedad de connservación de dependencias funcionales ya que no es tan vital.
+
+\subsection{Primer forma normal}
+Un esquema $R$ está en \textbf{primer forma normal} si sus atributos incluyen sólo \textbf{valores atómicos}. En primer forma normal se prohibe tener tuplas o conjuntos como atributos de relación.
+
+\subsection{Segunda forma normal}
+Una relación está en segunda forma normal si todo atributo no primo tiene una dependencia funcional total con la clave primaria de $R$.
+
+\subsection{Tercer forma normal}
+Una relación está en tercer forma normal si para toda dependencia funcional $X\rightarrow Y$ en $R$ \emph{no trivial} vale \textbf{una} de las siguientes condiciones:
+\begin{itemize}
+    \item $X$ es una superclave de $R$.
+    \item $Y$ es un atributo primo de $R$.
+\end{itemize}
+
+Observemos que una relación que viola la tercer forma normal es aquella en la que ambas condiciones son falsas. Esto puede pasar con dos tipos de dependencias funcionales: un atributo no primo determinando funcionalmente otro atributo no primo \textbf{o} un sobconjunto de una clave determinando funcionalmente un atriuto no primo.
+
+\subsection{Forma normal de Boyce Codd}
+Una relación está en tercer forma normal si para toda dependencia funcional $X\rightarrow Y$ en $R$ \emph{no trivial}, $X$ es una superclave de $R$.
+
+Observemos que la única forma que una relación esté en tercer forma normal, pero no en forma normal de Boyce Codd es si en ella existe una dependencia funciona $X\rightarrow Y$ en la que $X$ no sea una superclave e $Y$ sea un atributo primo.
+
+Observemos también que cualquier esquema de relación con sólo dos atributos está inmediatamente en forma normal de Boyce Codd.
+
+% CLAUSURAS DE DEPENDENCIAS? Capitulo 16 HACEME
+
+\section{Almacenamiento físico}
+\subsection{Heap File}
+Un \textbf{heap file} es la forma más básica de almacenamiento: los registros son almacenados en archivos en el orden en el que son insertados. La inserción de registros nuevos es extremadamente eficiente, pero al no estar ordenados buscar la existencia de un registro implica hacer una búsqueda lineal en todos los registros. Similarmente, borrar registros tiene problemas de dejar espacio inútil en el medio.
+
+\subsection{Sorted File}
+Un \textbf{sorted file} es una forma de almacenamiento de registros que los ordena por alguno de sus atributos. Los archivos ordenados tienen la ventaja de que es mucho más eficiente la búsqueda puesto que se puede hacer búsqueda binaria (siempre que se esté buscando por el atributo de ordenamiento).
+
+Los \emph{sorted file} no proveen ventajas para búsquedas aleatorias u ordenadas por atributos que no sean los de ordenamiento. En esos casos se hace una búsqueda lineal, al igual que en el heap file.
+
+Insertar y borrar registros en \emph{sorted files} son operaciones caras, puesto que deben ser insertados (o eliminados) de los lugares correctos, manteniendo el invariante.
+
+% \subsection{Hash File}
+% % Un archivo hash es un //HACEME
+
+\section{Índices}
+Un \textbf{índice} es una estructura de acceso utilizada para acelerar la obtención de registros si se cumplen determinadas condiciones de búsqueda. Se implementan mediante archivos adicionales que proveen accesos secundarios sin afectar la distribución original de los registros en la tabla (evitando tener problemas de duplicación de información del estilo \emph{cache}).
+
+Un índice se construye en base a uno o más atributos, que determinan la condición sobre la que se puede buscar más eficientemente usando el índice. Es importante notar que se pueden crear cuantos índices se quieran sobre una tabla, pero no necesariamente vale que más índices $\Rightarrow$ mejor performance. Los índices, como cualquier estructura de datos tienen costos de \emph{bookkeeping} que es necesario contrastar contra las ventajas de acceso. Particularmente los índices suelen hacer más costosas las operaciones de inserción y borrado.
+
+\subsection{Factor de bloqueo}
+El \textbf{factor de bloqueo} de una tabla es un valor que permite calcular la cantidad de bloques de disco ocupa una determinada tabla. Informalmente, representa cuántas entradas de una tabla entran en un bloque de disco.
+
+Se calcula como:
+
+\caja{0.3}{$\displaystyle fbr = \left\lceil \displaystyle \frac{\text{tamaño de un registro}}{\text{tamaño del bloque}}\right\rceil$} % ARREGLAME LA CAJITA
+
+Para buscar por rango como el archivo está ordenado simplemente hay que encontrar el primer registro que cumple la condición mínima y avanzar linealmente hasta obtener la máxima. Es el mismo costo que una búsqueda con igualdad (considerando la cantidad de registros a devolver posiblemente mayor).
+
+\subsection{Índice primario}
+Un índice es \textbf{primario} si en el índice se guarda toda la tupla que corresponde y no sólo un identificador y el puntero.
+% Un índice \textbf{primario} es una estructura ordenada que tiene dos campos. El primero es la entrada de índice, que es del mismo tipo que el atributo de ordenamiento del índice. El índice tiene una de cada una de estas por cada bloque en el archivo de datos. Asociado a cada entrada hay un puntero al bloque de disco donde está almacenado ese registro.
+
+% Observemos que la cantidad de entradas en el índice es igual a la cantidad de bloques en el disco.
+
+% Según el apunte de la materia un índice es primario si en el índice se guarda toda la tupla que corresponde y no sólo un identificador y el puntero. (Inconsistencia?)
+
+% \textbf{Sólo se puede tener un índice primario por tabla}.
+
+
+
+
+\subsubsection{Costo}
+Para ubicar un registro en una tabla que posee un índice primario se puede realizar una búsqueda binaria, requiriendo $log_2(b_i) + 1$ accesos a disco.
+
+Luego, podemos estimar la cantidad de accesos a disco como
+
+\caja{0.3}{$log_2\left(\left\lfloor \displaystyle \frac{\#registros}{\text{factor de bloqueo}}\right\rfloor\right)+1$} % ARREGLAME LA CAJITA
+
+Para buscar por rango como el archivo está ordenado simplemente hay que encontrar el primer registro que cumple la condición mínima y avanzar linealmente hasta obtener la máxima. Es el mismo costo que una búsqueda con igualdad (considerando la cantidad de registros a devolver posiblemente mayor).
+
+\caja{0.4}{$log_2\left(\left\lfloor \displaystyle \frac{\#registros}{\left\lceil \displaystyle \frac{\text{tamaño de un registro}}{\text{tamaño del bloque}}\right\rceil}\right\rfloor\right)+1$} % ARREGLAME LA CAJITA
+
+Para buscar por rango como el archivo está ordenado simplemente hay que encontrar el primer registro que cumple la condición mínima y avanzar linealmente hasta obtener la máxima. Es el mismo costo que una búsqueda con igualdad (considerando la cantidad de registros a devolver posiblemente mayor).
+
+\subsection{Índices densos o esparsos}
+Un índice es \textbf{denso} si tiene una entrada por cada registro en la tabla de datos.
+
+Por otro lado, un índice \textbf{esparso} tiene entradas sólo para algunos registros.
+
+
+\subsection{Índice clustered}
+Si los datos del archivo están ordenados físicamente en el mismo orden que uno de sus índices, decimos que ese índice es \textbf{clustered}. Caso contrario es \textbf{unclustered}.
+
+Los archivos de datos a lo sumo pueden tener un índice clustered, en tanto que la cantidad de índices unclustered es ilimitada.
+
+Observemos que por definición, todo índice clustered es esparso.
+
+\ig{0.9}{clusteredVsUnclustered.jpg}
+% \ig{0.6}{clusteredIndex.png}
+
+\subsection{Índice secundario}
+Un índice \textbf{secundario} provee una herramienta para acceder más eficientemente a una tabla para la que ya existe un índice primario. O sea, \textbf{el archivo no está ordenado en función del campo para el que creo un índice secundario} (esto puede ser porque sea un \emph{sorted file} ordenado por otro campo o porque estemos creando un índice sobre un \emph{heap file}).
+
+\textbf{Se pueden crear muchos índices secundarios en una misma tabla}.
+
+Un índice secundario puede tener en su estructura interna un puntero a bloque de disco o a registro.
+
+\ig{0.5}{primaryIndex.png}
+
+\subsection{Índice B+}
+Un índice B+ es árbol balanceado con una cantidad variable de hijos por nodo. Las hojas están doblementen enlazadas para poder recorrerlas linealmente (evitando tener que bajar por toda la altura del árbol cada vez).
+
+\subsubsection{Clustered}
+Los índices árbol B+ clustered son aquellos para los cuales el archivo de datos asociado está ordenado en el mismo orden que dicho índice.
+
+\begin{itemize}
+    \item No ayudan para exploración completa. Su costo es acceder a todos los bloques del archivo.
+    \item Para buscar por igualdad, se debe recorrer el árbol desde la raíz hasta la hoja (peor caso $altura_arbol$ accesos a disco) y luego se debe obtener secuencialmente todos los registros que matcheen con el criterio de búsqueda.
+    \caja{0.39}{$\displaystyle \text{altura arbol} + \left\lceil \displaystyle \frac{\text{cantidad tuplas}}{\left\lfloor \displaystyle \frac{\text{tamaño registro}}{\text{tamaño bloque}}\right\rfloor}\right\rceil$}
+    \item Para buscar por rango como el archivo está ordenado simplemente hay que encontrar el primer registro que cumple la condición mínima y avanzar linealmente hasta obtener la máxima. Es el mismo costo que una búsqueda con igualdad (considerando la cantidad de registros a devolver posiblemente mayor).
+\end{itemize}
+
+\subsection{Tabla de costo de índices}
+\ig{0.4}{costoBusquedas.png}
+
+
+\section{Procesamiento y optimización de queries}
+Una \emph{query} suele tener muchas posibles formas de ser ejecutada para obtener el set de datos deseado. Cada una de esas formas de ejecución se llama \textbf{query plan}.
+
+Uno de los componentes del \texttt{DBMS}, el \textbf{query optimizer} es el encargado de seleccionar cual de esos planes ejecutar. Como encontrar el plan óptimo es un problema NP-Completo, el \emph{query optimizer} utiliza otras técnicas para encontrar uno suficientemente bueno en un tiempo razonable.
+
+La optimización de la \emph{query} tiene varios aspectos:
+\begin{itemize}
+    \item Utilización de heurísticas: se aplican transformaciones del álgebra relacional que tienen la propiedad de mantener los resultados obtenidos. Las heurísticas suelen mejorar la performance, pero no es una garantía.
+    \item Estimación de selectividad: el \emph{optimizer} utiliza la información almacenada en el \textbf{catálogo} de la base de datos para estimar el grado de selectividad que tiene la query (\emph{``cuántas tuplas devuelve''}). De esta forma se puede tener una medida estimativa de cuan ``cara'' va a ser la ejecución de dicha query.
+    \item Índices y tipo de archivo: el plan de ejecución elegido depende muy fuertemente de los índices que se disponga en la tabla y cómo esté ordenado físicamente el archivo en disco.
+\end{itemize}
+
+Una vez obtenido el plan de ejecución, el \textbf{code generator} genera el código correspondiente a ese plan y el \textbf{runtime database processor} lo ejecuta.
+
+\ig{0.6}{queryGral.png}
+
+\subsection{Pipeline}
+El camino para ejecutar una \emph{query} comienza con un parseo y traducción de la \emph{query} a una expresión del álgebra relacional, compuesta de muchas \emph{operaciones}. Si ejecutáramos individualmente cada operación, y dado que las tablas no suelen entrar enteras en memoria, sería necesario grabar a archivos temporales en el disco para almacenar los resultados intermedios. Esto es extremadamente costoso por los accesos adicionales que requiere.
+
+Para subsanar esto se aplican heurísticas que ordenan las operaciones de forma de que el input de una se pueda alimentar como output de la siguiente, reduciendo la cantidad de grabaciones a disco. No las eliminan por completo porque hay operaciones que requieren la \emph{materialización} (bajada a disco) (por ejemplo los \emph{join}). Esta técnica se conoce como \textbf{pipelining}.
+
+\subsection{Query tree}
+Un \textbf{query tree} (o árbol de \emph{query}) es una estructura de datos que corresponed a una expresión del álgebra relacional. Las hojas coresponden a las relaciones mientras que los nodos intermedios representan operaciones.
+
+\ig{0.6}{queryTree.png}
+
+\subsection{Implementando queries}
+\subsubsection{Select}
+Existen varias formas de ejecutar un \texttt{SELECT} dependiendo de los índices y la organización del archivo.
+\begin{itemize}
+    \item Búsqueda lineal.
+    \item Búsqueda binaria.
+    \item Usando un índice primario.
+    \item Usando una clave hash.
+    \item Usando un índice B+.
+    \begin{itemize}
+        \item Clustered.
+        \item Unclustered.
+    \end{itemize}
+\end{itemize}
+
+
+\subsubsection{Join}
+Al igual que con \emph{SELECT}, existen varias formas de ejecutar un \texttt{JOIN}:
+\begin{itemize}
+    \item \textbf{Block Nested Loop Join} (\texttt{BNLJ}): es el approach de fuerza bruta. Si se tienen $B$ bloques de memoria, se llenan $B-2$ con bloques de una de las tablas. Otro bloque se usa para ir iterando todos los bloques de la otra tabla y el restante para el resultado. Siempre conviene poner el archivo con menos bloques en la iteración exterior (o sea llenar los $B-2$ con él). %CREOOOOOO REVISAMMMMEEE PREGUNTAMEEEEE
+    \item \textbf{Index Nested Loop Join} (\texttt{INLJ}): se utiliza cuando se tiene un índice en una de las tablas que coincida con el atributo del join. Se itera sobre la otra tabla, buscando los atributos coincidentes utilizando el índice. El costo depende del tipo de índice.
+    \item \textbf{Sort Merge Join} (\texttt{SMJ}): se ordenan ambas relaciones (si no estaban ordenadas) y se recorren ordenadamente. El costo es el de ordenar ambas relaciones (algoritmo de sorting en disco) y luego hacer el merge (lineal en ambos tamaños).
+\end{itemize}
+
+\subsection{Heurísticas}
+\begin{itemize}
+    \item Cascada de $\sigma$: una conjunción de selecciones puede ser rota en operaciones individuales:
+    \begin{center}
+        $\sigma_{c_1\text{ AND }c_2\text{ AND } ... \text{ AND }c_n} = \sigma_{c_1}(\sigma_{c_2}( ... (\sigma_{c_n}(R))))$
+    \end{center}
+    \item Conmutatividad de $\sigma$: la operación de selección es conmutativa.
+    \begin{center}
+        $\sigma_{c_1}(\sigma_{c_2}(R)) = \sigma_{c_2}(\sigma_{c_1}(R))$
+    \end{center}
+    \item Cascada de $\pi$: en una secuencia de proyecciones, sólo es relevante la última.
+    \begin{center}
+        $\pi_{L_1}(\pi_{L_2}(...(\pi_{L_n}(R)))) = \pi_{L_1}(R)$
+    \end{center}
+    \item Conmutatividad de $\sigma$ con $\pi$: si la condición de selección sólo involucra atributos de la lista, las dos operaciones se pueden conmutar.
+    \begin{center}
+        $\pi_{A_1, A_2, ..., A_n}(\sigma_{C}(R)) = \sigma_C(\pi_{A_1, A_2, ..., A_n}(R))$
+    \end{center}
+    \item Conmutatividad de $\bowtie$ y $\times$:
+    \begin{center}
+        $R \bowtie S = S \bowtie R$\\
+        $R \times S = S \times R$
+    \end{center}
+    \item Conmutatividad de $\sigma$ con $\bowtie$: si todos los atributos de la condición de selección involucran ($c$) sólo atributos de una de las relaciones (digamos $R$), entonces las operaciones se pueden conmutar.
+    \begin{center}
+        $\sigma_c(R\bowtie S) = (\sigma_c(R))\bowtie S$
+    \end{center}
+
+    La versión general de esto es que si la condición $c$ se puede escribir como $c_1 AND c_2$ donde $c_1$ pertenecen sólo a $R$ y $c_s$ sólo a $S$, entonces:
+    \begin{center}
+        $\sigma_{c_1\text{ AND }c_s}(R\bowtie S) = (\sigma_c1(R)\bowtie \sigma_{c_2}(S))$
+    \end{center}
+    \item Conmutatividad de $\pi$ con $\bowtie$. Idem anterior.
+    \item Conmutatividad de operaciones de conjuntos.
+    \item Asociatividad de $\times$, $\bowtie$, $\bigcup$ y $\bigcap$.
+    \item Conversión de ($\sigma_c, \times$) en un ($\bowtie_c$): si tenemos una selección inmediatamente después de un producto cartesiano se puede convertir a un join.
+    \begin{center}
+        $\sigma_c(R\times S) = (R \bowtie_c S)$
+    \end{center}
+\end{itemize}
+
+
+\section{Transacciones}
+Una \textbf{transacción} es un programa en ejecución que forma una unidad lógica de procesamiento de base de datos. Incluye uno o más operaciones de acceso a la base de datos, que pueden ser inserciones, modificaciones, borrados, etc.
+
+Las cuatro operaciones básicas de una transacción son: \textbf{read}, \textbf{write}, \textbf{commit} y \textbf{abort}.
+
+\subsection{Propiedades ACID}
+Las transacciones deben cumplir las propiedades \texttt{ACID}:
+\begin{itemize}
+    \item \textbf{A}tomicity: una transacción debe ejecutarse completa o no ejecutarse del todo.
+    \item \textbf{C}onsistency: una transacción debe tomar una base de datos en estado válido y dejarlo en un estado válido.
+    \item \textbf{I}solation: ejecuciones concurrentes de transacciones deben arrojar el mismo resultado que si se hubieran ejecutado esas transacciones linealmente.
+    \item \textbf{D}urability: una vez que una transacción commitea, los cambios que realizó son permanentes y no deben ser perdidos aún en el caso de fallas futuras (eléctricas, físicas, lógicas, etc).
+\end{itemize}
+
+
+\subsection{Problemas de control de concurrencia}
+\subsubsection{Lost update}
+El problema de \textbf{lost update} ocurre cuando dos transacciones que acceden al mismo ítem de la base de datos ven sus operaciones entrelazadas de tal forma que uno lee un valor para modificarlo y el otro lo lee antes que el primero pueda escribirlo:
+
+\ig{0.6}{lostUpdate.png}
+
+
+\subsubsection{Dirty read}
+El problema de \textbf{dirty read} ocurre cuando una transacción actualiza un valor de la base de datos y luego aborta. Entonces si otra transacción usó ese valor para realizar algún cómputo, ese cómputo deja de ser válido.
+
+\ig{0.6}{dirtyRead.png}
+
+
+\subsubsection{Incorrect summary}
+El problema de \textbf{incorrect summary} ocurre cuando una transacción está calculando una suma de agregación en algunas tuplas de la base de datos mientras que otra transacción está actualizando las mismas tuplas.
+
+\ig{0.6}{incorrectSummary.png}
+
+
+\subsubsection{Unrepeatable read}
+El problema de \textbf{unrepeatable read} ocurre cuando una transacción lee el mismo ítem dos veces consecutivas y obtiene distintos valores. Esto ocurre cuando una transacción no obtiene un lock individual sobre un ítem antes de acceder a él.
+
+
+\subsubsection{Phantom read}
+Se conoce como problema \textbf{phantom read} (o lectura fantasma) a la situación en la que se corren dos queries exactamente iguales y estas arrojan resultados distintos. Esto ocurre cuando las transacciones no obtienen locks de las tablas enteras (o de rangos) antes de realizar \emph{queries}. Es un caso particular de \emph{unrepeatable read}.
+
+\subsection{Niveles de acceso}
+
+Se definen los \textbf{niveles de aislamiento} de una transacción en función de qué problemas pueden ocurrirle:
+% Para evitar los problemas de \emph{unreapetable} y \emph{phantom read} se pueden usar los distintos niveles de aislamiento:
+
+% Please add the following required packages to your document preamble:
+
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+\begin{table}[h]\centering
+\begin{tabular}{|l|
+>{\columncolor[HTML]{34FF34}}l |l|
+>{\columncolor[HTML]{FE0000}}l |}
+\hline
+\multicolumn{1}{|c|}{\cellcolor[HTML]{FFFFFF}\textbf{}} & \cellcolor[HTML]{FFFFFF}\textbf{Dirty read} & \cellcolor[HTML]{FFFFFF}\textbf{Non repeatable read} & \cellcolor[HTML]{FFFFFF}\textbf{Phantom read} \\ \hline
+\textbf{Read uncommited}                                             & \cellcolor[HTML]{FE0000}Si                  & \cellcolor[HTML]{FE0000}Si                           & Si                                            \\ \hline
+\textbf{Read commited}                                               & No                                          & \cellcolor[HTML]{FE0000}Si                           & Si                                            \\ \hline
+\textbf{Repeatable read}                                             & No                                          & \cellcolor[HTML]{34FF34}No                           & Si                                            \\ \hline
+\textbf{Serializable}                                                & No                                          & \cellcolor[HTML]{34FF34}No                           & \cellcolor[HTML]{34FF34}No                    \\ \hline
+\end{tabular}
+\end{table}
+
+
+\subsection{Historias}
+Un \textbf{schedule} (o historia) de $n$ transacciónes $T_1, T_2, ..., T_n$ (llamado $S$) es un ordenamiento de las operaciones de las antedichas transacciones que mantiene el orden relativo de las operaciones de cada transacción. Esto significa que si dos operaciones $o_1$ y $o_2$ de una transacción $T$ ocurrían $o_1$ antes que $o_2$ en $T$ entonces necesariamente ocurrirá $o_1$ antes que $o_2$ en $S$.
+
+\subsubsection{Conflicto}
+Dos operaciones en una historia se dice que están en \textbf{conflicto} si se las siguientes tres condiciones:
+\begin{itemize}
+    \item Pertenecen a transacciones diferentes.
+    \item Acceden el mismo item.
+    \item Al menos una de ellas es de escritura.
+\end{itemize}
+
+\textbf{Intuitivamente, esta definición redunda en que dos operaciones son conflictivas si alterar su orden puede afectar el resultado}.
+
+\subsubsection{Tipos de historias}
+Las historias se pueden categorizar de acuerdo a la siguiente jerarquía:
+\begin{itemize}
+    \de{Serial}{una historia es \textbf{serial} si se ejecutan las transacciones secuencialmente, sin entrelazar sus operaciones.}
+    \de{Serializable}{una historia es \textbf{serializable} si su resultado final es equivalente a alguna ejecución serial de las mismas transacciones.}
+    \de{Recuperable}{}
+    \begin{itemize}
+        \de{Recuperable}{una historia es \textbf{recuperable} si ninguna transacción $T\in S$ \emph{commitea} hasta que toda otra transacción $T'\in S$ que haya escrito un valor que $T$ leyó comitee.}
+        \de{Cascadeless}{se conoce como \textbf{aborto en cascada} al fenómeno que ocurre en algunas historias recuperables en los que una transacción que todavía no hizo su \emph{commit} tiene que ser deshecha porque leyó de un ítem de una transacción que fue abortada. Luego, una transacción se dice que evita el aborto en cascada (es \emph{cascadeless}) si cada transacción en la historia sólo lee aquellos items que fueron escritos por transacciones que ya commitearon.}
+        \de{Estrícto}{un schedule es \textbf{estrícto} si las transacciones no pueden escribir ni leer un ítem $x$ hasta que la última transacción que escribió el valor de $x$ haya \emph{commiteado} o abortado.}
+    \end{itemize}
+\end{itemize}
+
+Dos historias se dicen \textbf{equivalentes en conflicto} si el orden de todo par de operaciones conflictivas es el mismo en ambas.
+
+\subsubsection{Grafo de precedencias}
+El \textbf{grafo de precedencias} de una historia es un grafo dirigido $G=(N,E)$ en el que los nodos son las transacciones $N=T_1, T_2, ..., T_n$. Existe un eje entre las transacciones $j$ y $k$ ($e = (T_j \rightarrow T_k)$) si una operación de $T_j$ aparece en la historia antes que alguna operación de conflicto en $T_k$.
+
+Informalmente, en el grafo de presedencia de una historia $S$ un eje de $T_i$ a $T_j$ significa que $T_i$ debe venir antes que $T_j$ en cualquier operción serial equivalente a $S$ porque dos operaciones conflictivas aparecen en ese orden.
+
+Una historia es \textbf{serializable} si y sólo si su grafo de precedencias no tiene ciclos.
+
+
+\subsection{Logging y recuperación}
+El \textbf{system log} es el componente del \texttt{DBMS} encargado de mantener un registro de todas las operaciones realizadas por las transacciones que afectan los valores de los ítems de la base de datos, así como otra información de las transacciones útil para recuperar la consistencia de la base de datos en caso de falla. Este log es un archivo en el disco que se graba secuencialmente y sólo permite agregar información.
+
+
+\subsection{Locking}
+Un \textbf{lock} es una variable asociada con un item que describe el estado del ítem con respecto a las posibles operaciones que se pueden realizar sobre él.
+
+El esquema de lockeo binario es demasiado restrictivo porque impone que una sola transacción puede leer el mismo ítem a la vez.
+
+\subsubsection{Binario vs Shared}
+Un \textbf{lock binario} es aquel que puede tener dos estados: bloqueado o liberado.
+
+Un \textbf{shared lock} (o \textbf{read/write lock}) puede tener tres estados:
+\begin{itemize}
+    \item \emph{read\_lock(X)}
+    \item \emph{write\_lock(X)}
+    \item \emph{unlocked(X)}
+\end{itemize}
+
+\subsubsection{Optimista vs Pesimista}
+Un lock es \textbf{optimista} si permite realizar todas las operaciones, pero falla cuando se va a \emph{commitear} esos cambios. En un lockeo optimista una operación de \emph{read} o \emph{write} puede desencadenar un \emph{rollback} de la transacción. Esto puede generar un \emph{livelock} a una transacción. Es un modelo más probabilístico: funciona mejor cuando hay pocos conflictos.
+
+Si el lock impide el acceso a los datos en el momento que se solicitan (y no al momento de \emph{commitear}). En el lockeo pesimista puede haber \emph{deadlocks}.
+
+\subsubsection{Two phase locking}
+Una transacción se dice que sigue \textbf{two phase locking} (o \texttt{2PL}) si todas las operaciones de \emph{lock} preceden a la primer operación de \emph{unlock}. Si todos los recursos a lockear tienen un orden (común a todas las transacciones) y todas las transacciones de una historia $S$ piden los recursos en orden se puede demostrar que $S$ es serializable y no hay \emph{deadlock}.
+
+Otra forma de evitar el \emph{deadlock} con \texttt{2PL} es que durante la fase de obtención de locks, si una transacción no puede obtener un lock, libera todos los que posee y vuelve a intentarlo después de un tiempo. Sólo comienza la fase de procesamiento si puede obtener todos los locks.
+
+
+
+
+
+\section{Recuperabilidad}
+\subsection{Sin Checkpoint}
+\subsubsection{Undo}
+\underline{Regla}: una transacción hace write. Ahí mismo el \emph{transaction manager} puede, si quiere hacer los cambios a disco. Cuando la transacción hace commit, antes de escribir el commit en el log, todos los cambios que hizo la transacción tienen que haber sido bajadas a disco.
+
+\underline{Problema}: Estás coartándole las libertades al transaction manager porque todos los cambios tienen que haber sido mandados a disco antes que se escriba el commit de la transacción en el log.
+
+\subsubsection{Redo}
+\underline{Regla}: una transacción hace write. El \emph{transaction manager} no puede escribir nada a disco hasta que la transacción hace commit. Una vez que la transacción hace commit, se escribe inmediatamente el commit al log (y se \emph{flushea}) y ahí el transaction manager puede ir bajando las cosas a disco cuando quiera.
+
+\underline{Problema}: necesita demasiado buffer. Y también acota al transaction manager porque lo obliga a esperar a mandar las cosas a disco hasta que después la transacción haga commit, ese commit se escribe en el log.
+
+\subsubsection{Undo/Redo}
+\underline{Problemas}:
+\begin{itemize}
+    \item El log ocupa más lugar.
+    \item Requiere más trabajo ante un crash.
+\end{itemize}
+
+\underline{Ventaja}: el transaction manager puede hacer lo que quieras.
+
+\subsection{Checkpoint}
+En un momento se dejan de aceptar transacciones. Se espera a que commiteen todas las transacciones activas en este momento. Se flushea todo a disco (o sólo las commiteadas en el caso del redo) y escribimos un ``$<$checkpoint$>$'' en el log y volvemos a aceptar transacciones. De este modo no tenemos que revisar todo el log hasta arriba de todo para restaurar.
+
+\underline{Problema}: cuando se quiere hacer el checkpoint hay que dejar de aceptar transacciones y eso puede ser inaceptable.
+
+\subsection{Checkpoint no quiescente}
+Se escribe un ``$<$start ckpt($T_1, ... T_n$)$>$'' donde las transacciones ($T_1, ..., T_n$) son las activas.
+
+\subsubsection{Undo}
+Al momento de escribir el end checkpoint, todas las transcciones activas tienen que haber commiteado (y, consecuentemente, sus cambios tienen que estar en disco por la regla de undo).
+\subsubsection{Redo}
+Al momento de escribir el end checkpoint, todas las transacciones que hicieron commit antes del start checkpoint ya tienen sus cambios grabados en disco.
+\subsubsection{Undo/Redo}
+Al momento de escribir el end checkpoint, absolutamente todo lo que pasó antes del start checkpoint ya tiene que estar en disco.
+
+
+
+
+\section{Seguridad}
+La \textbf{seguridad integrada} es la delegación de la autenticación a la base de datos al sistema operativo.
+
+
+\section{NoSQL}
+\subsection{Teorema CAP}
+El teorema \texttt{CAP} establece que es imposible para un sistema de cómputo distribuido garantizar simultáneamente las siguientes tres propiedades (a lo sumo se pueden 2 de 3):
+\begin{itemize}
+    \item \textbf{C}onsistency: que todos los nodos vean la misma información al mismo tiempo.
+    \item \textbf{A}vailavility: la garantía de que cada petición a un nodo reciba una confirmación por si o por no (si fue completada la petición).
+    \item \textbf{P}artition tolerance: que el sistema siga funcionando a pesar de algunas pérdidas de información o fallos parciales del sistema.
+\end{itemize}
+
+\subsection{Big table}
+``Distributed multidimensional sorted map''.
+Es la implementación de almacenamiento de Google, donde la mayor parte de las celdas están sin utilizar. Se distribuye en forma paralela, tiene geo-redundancia.
+
+Además tiene una dimensión de \emph{timestamp}. Mapea $(rowKey, columnKey, timeStamp)$ a datos arbitrarios.
+
+
+\subsection{Map reduce}
+\subsection{Consistencias eventual}
+Se prefiere tiempo real por sobre consistencia. No hay garantía de que los datos que obtengas sean los últimos. La propiedad de \textbf{consistencia eventual} dice que, informalmente, ``si nadie lo toca eventualmente va a ser consistente''.
+
+
+
+\section{Data Mining}
+Es la etapa de análisis de \emph{Knowledge Discovery in Databases} (\texttt{KDD}). Extraer patrones de los datos y generar modelos predictivos sobre minerías de datos.
+
+% :w !sudo tee % > /dev/null
+\subsection{Reglas de asociación}
+Una \textbf{regla de asociación} es cuando se determina \emph{``siempre que pasa A, pasa B''}. Para medir cuán \emph{buena} es una regla de asociación, se utilizan tres criterios:
+\begin{itemize}
+    \de{Soporte}{indica la \textbf{representabilidad} de la regla. Es la cantidad de veces que $A$ y $B$ sobre el total de transacciones.}
+    \de{Confianza}{indica cuánto trae $A$ a $B$. Es la cantidad de veces que aparecen $A$ y $B$ sobre el total de veces que aparece $A$.}
+    \de{Lift}{indica el nivel de atracción de las variables. O sea compara la cantidad de veces que aparecen juntas contra la cantidad de veces que hubieran aparecido juntas si las probabilidades hubieran sido disjuntas.}
+\end{itemize}
+
+\subsection{Apriori}
+\textbf{Apriori} es un algoritmo que permite encontrar conjuntos de ítems frecuentes en una base de datos transaccional. Procede identificando los items frecuentes en los conjuntos y extendiéndolos a conjuntos más grandes mientras que superen el \emph{treshold} seteado por el usuario.
+
+Este algoritmo puede ser usado para determinar reglas de asociación de la base de datos, muy usando en el \textbf{market basket analysis}.
+
+\subsection{Árboles de clasificación}
+\ig{0.7}{classifTree.png}
+
+\subsection{Market Basket Analysis}
+El \textbf{affinity analysis} es una técnica de análisis de datos y \textit{data mining} que descubre reglas de co-ocurrencia entre actividades realizadas por individuos y grupos específicos. En general, se puede aplicar a cualquier proceso tal que los agentes puedan ser identificados y cuyas actividades puedan ser recopiladas. Un ejemplo es \textbf{market basket analysis} en el que los vendedores como Wallmart buscan entender el comportamiento de compra de sus compradores. Esta información puede ser usada con el propósito de \textit{cross-selling} y \textit{up-selling}, y afectar los descuentos y programas de beneficio al cliente.
+
+\subsubsection{Buisness intelligence}
+\textbf{Buisness inteligence}: Extraer info de los datos para mejorar la toma de decisiones.
+
+\subsubsection{Tipos de métodos}
+\begin{itemize}
+    \item Métodos supervizado: es una técnica para deducir una función a partir de datos de entrenamiento etiquetado (que se conoce el resultado deseado). El objetivo del aprendizaje supervisado es el de crear una función capaz de predecir el valor correspondiente a cualquier objeto de entrada válida después de haber visto una serie de ejemplos, los datos de entrenamiento. Hay dos ipos
+    \begin{itemize}
+        \item Clasificación: tengo un serie de etiquetas que corresponden a clases y quiero inferir la función que me clasifican. (tengo un conjunto de células. Es o no un tumor?)
+        \item Regresión: tengo un conjunto de valores y una función desconocida y quiero inferir el valor que va a tener los valores. (tengo todos los precios de alquileres en baires en los ultimos 5 años. cuánto va a valer el mes que viene?)
+    \end{itemize}
+    \item Métodos no supervizados: Encontrar patrones ocultos en datos no etiquetados. Ejemplos:
+    \begin{itemize}
+        \item Market basket analysis.
+        \item Clustering (k-clustering, clustering jerárquico).
+    \end{itemize}
+\end{itemize}
+
+\textbf{Overfitting}: el algoritmo está sobreentrenado. Más que aprender a predecir la función, aprende a predecir el ruido.
+
+
+\section{Data Warehousing}
+Un \textbf{data warehouse} es una collección de datos que cumple las propiedades \texttt{INTS}:
+\begin{itemize}
+    \item Integrated.
+    \item Non-Volatile.
+    \item Time variant.
+    \item Subject oriented.
+\end{itemize}
+
+Para acordárselo uno puede usar la regla mnemotécnica: ``\textbf{No} \textbf{Tv} => \textbf{In}\textbf{So}mnio''.
+
+Se utilizan para dar soporte a decisiones empresariales y de \emph{buisness inteligence}. Proveen acceso a los datos para análisis complejo, descubrimiento de conocimiento y toma de decisiones. Dan soporte a demandas de alta performance en los datos de la organización.
+
+A diferencia de las bases de datos tradicionales, los \emph{data warehouses} típicamente soportan analisis temporal y de tendencia, que necesitan almacenar información histórica. Además, los cambios en los \emph{data warehouses} suelen ser actualizados menos frecuentemente (no se considera vital que los cambios en el mini-mundo sean reflejados inmediatamente).
+
+\subsection{Dimensiones}
+Uno de los conceptos clave en los data warehouses es el de dimensión. Una dimensión provee estructura de etiquetado a la información que en otro caso serían medidas numéricas desordenadas. Una dimensión es un conjunto de datos individuales y disjuntos. Sus propósitos principales son:
+\begin{itemize}
+    \item Filtrado.
+    \item Agrupamiento.
+    \item Etiquetado.
+\end{itemize}
+
+%In a data warehouse, Dimensions provide structured labeling information to otherwise unordered numeric measures. The dimension is a data set composed of individual, non-overlapping data elements. The primary functions of dimensions are threefold: to provide filtering, grouping and labelling.
+
+\textbf{Informalmente, podemos ver a las dimensiones un data warehouse como los distintos ángulos sobre los que estudiamos la información almacenada en el mismo}.
+
+\subsubsection{Modelos multidimensionales}
+Los modelos multidimensionales permiten agruparse en vistas:
+\begin{itemize}
+    \de{Roll-up}{agrupa operaciones en unidades más grandes en una dimensión.}
+    \de{Drill-down}{permite desagregar en unidades más pequeñas en una dimensión.}
+\end{itemize}
+
+
+\subsection{Esquemas multidimensionales}
+Los datawarehouses generalmente tienen dos posibles esquemas para sus dimensiones:
+\begin{itemize}
+    \item \textbf{Star}: consiste en una tabla de hechos central y $n$ tablas individuales para cada dimensión.
+
+    \ig{0.7}{DWStarSchema.png}
+
+    \item \textbf{Snowflake}: nuevamente hay una tabla central de hechos, pero las dimensiones están organizadas en forma jerárquica.
+
+    \ig{0.7}{DWSnowflakeSchema.png}
+
+\end{itemize}
+
+
+\newpage
+\section{Fuentes}
+\begin{itemize}
+    \item Fundamentals of Database Systems (6th Edition) - Elmasri \& Navathe.
+    \item Slides de la cátedra de Bases de Datos de Cecilia Ruz.
+    \item Apuntes de clase de Julián Sackmann.
+\end{itemize}
+
+\end{document}

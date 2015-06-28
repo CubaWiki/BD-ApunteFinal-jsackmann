@@ -3,4 +3,4 @@ all:
 	pdflatex Bases
 
 clean:
-	rm -rf Bases.pdf *.toc *.aux *.log *.mtc *.mtc0 *.maf
+	rm -rf *.toc *.aux *.log *.mtc *.mtc0 *.maf
